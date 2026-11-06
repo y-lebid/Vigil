@@ -2,13 +2,19 @@
 
 ![Tests](https://github.com/y-lebid/Vigil/actions/workflows/tests.yml/badge.svg)
 
-Lightweight CLI SIEM for log parsing and rule-based detection.
+Lightweight CLI SIEM for parsing system logs and running rule-based detections.
 
-## Status
+> **Status: early development (v0.1.0).** The project skeleton, packaging and CI are in place. Log parsing, storage and detection rules are planned. See the [roadmap](docs/SPEC.md#8-етапи-розробки-і-релізи).
 
-Early development. Currently supports OpenSSH (`auth.log`) parsing and a SQLite-backed event store.
+## Goals
+
+Vigil reads OpenSSH authentication logs, stores normalised events in SQLite, and flags suspicious patterns such as repeated failed logins from one IP. Detection rules are written in YAML, so they can be read, changed and tested without touching Python code.
+
+It is built to run on an ordinary laptop, without a server or external services.
 
 ## Installation
+
+Requires Python 3.10 or newer.
 
 ```bash
 git clone https://github.com/y-lebid/Vigil.git
@@ -18,15 +24,41 @@ source .venv/bin/activate      # Windows: .venv\Scripts\activate
 pip install -e .
 ```
 
-## Usage
+## Development
 
 ```bash
-vigil scan --input auth.log --rules rules/
-vigil alerts --since 1h
+pip install pytest
+pytest
 ```
 
-Команди ще не реалізовані, тому залиш приклади тільки коли вони запрацюють, або позначай їх як планові.
+Every change should pass the test suite before it is committed. CI runs the same tests on Ubuntu and Windows with Python 3.10 and 3.14.
+
+## Platform support
+
+| Platform | Status |
+|---|---|
+| Linux (Ubuntu) | Tested in CI |
+| Windows 10/11 | Tested in CI |
+| WSL2 (Ubuntu) | Tested locally |
+
+Features that depend on system services, such as reading `/var/log/auth.log` directly or journald, will be marked as native Linux only.
+
+## Roadmap
+
+| Version | Scope | Status |
+|---|---|---|
+| v0.1.0 | Project skeleton, packaging, CI | Done |
+| v0.2.0 | Event model and OpenSSH parser | Planned |
+| v0.3.0 | SQLite storage | Planned |
+| v0.4.0 | Rule engine and `ssh_bruteforce` rule | Planned |
+| v0.5.0 | Command-line interface | Planned |
+
+The full specification, with requirements and acceptance criteria for each release, is in [docs/SPEC.md](docs/SPEC.md).
+
+## Contributing
+
+This is a personal project, but issues and suggestions are welcome. Please open an issue before starting a large change.
 
 ## License
 
-MIT
+MIT. See [LICENSE](LICENSE).
